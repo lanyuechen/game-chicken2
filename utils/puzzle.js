@@ -42,6 +42,7 @@ class Puzzle {
   }
 
   render(roleRender) {
+    this.container.innerHTML = '';
     const roles = [];
     this.board.forEach(d => d.forEach(r => !roles.includes(r) && r !== 0 && roles.push(r)));
     for (let role of roles) {

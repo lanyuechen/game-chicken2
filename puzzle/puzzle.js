@@ -1,9 +1,6 @@
 class PuzzleGame {
   constructor(selector, options = {}) {
-    this.options = {
-      row: 3, col: 3, size: 50, margin: 1, image: '',
-      ...options,
-    };
+    this.options = options;
     this.container = document.querySelector(selector);
     const board = [];
     for (let i = 0; i < this.options.row; i++) {
@@ -22,7 +19,7 @@ class PuzzleGame {
     });
   }
 
-  render() {
+  render(image) {
     const { row, col, size } = this.options;
     const dom = this.puzzle.render((role, rect) => {
       const div = document.createElement('div');
@@ -31,7 +28,7 @@ class PuzzleGame {
         border: ${this.options.margin}px solid #fff;
         box-sizing: border-box;
         height: 100%;
-        background: url(${this.options.image});
+        background: url(${image});
         background-size: ${col * size}px ${row * size}px;
         background-position: ${-rect.left}px ${-rect.top}px;
       `

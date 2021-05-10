@@ -14,13 +14,17 @@
   <script src="../utils/puzzle.js"></script>
   <script src="puzzle.js"></script>
   <script>
+    const h = new PuzzleGame('#container', {
+      row: 4,
+      col: 4,
+      size: 100,
+      margin: 1,
+    });
+    h.render('../images/400x400.jpg');
+
     function handleFileChange(e) {
       const file = e.target.files[0];
-      console.log('===', file)
-      const h = new PuzzleGame('#container', {
-        image: URL.createObjectURL(file)
-      });
-      h.render();
+      h.render(URL.createObjectURL(file));
     }
   </script>
 </body>
