@@ -29,89 +29,26 @@ class HuaRongDao {
   constructor(selector, options = { size: 100, margin: 2 }) {
     this.options = options;
     this.container = document.querySelector(selector);
-    this.board = STAGES[0].board;
-  }
-
-  move(role, [row, col]) {
-    const sourcePoints = this.getRolePoints(role);
-    const targetPoints = sourcePoints.map(p => [p[0] + row, p[1] + col]);
-
-    if (targetPoints.find(p => !this.board[p[0]] || typeof this.board[p[0]][p[1]] === 'undefined' || (this.board[p[0]][p[1]] && this.board[p[0]][p[1]] !== role))) {
-      return;
-    }
-
-    sourcePoints.forEach(p => this.board[p[0]][p[1]] = 0);
-    targetPoints.forEach(p => this.board[p[0]][p[1]] = role);
-
-    return targetPoints.length === 4 && targetPoints[0][0] === 3 && targetPoints[0][1] === 1; // 逃脱成功
-  }
-
-  getRolePoints(role) {
-    const sourcePoints = [];
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        if (this.board[i][j] === role) {
-          sourcePoints.push([i, j]);
-        }
-      }
-    }
-    return sourcePoints;
-  }
-
-  createRole(role) {
-    const points = this.getRolePoints(role.role);
-    const div = document.createElement('div');
-    const s = points[0];
-    const e = points[points.length - 1];
-    div.setAttribute('data-role', role.role);
-    div.style.cssText = `
-      background: ${role.background};
-      position: absolute;
-      left: ${s[1] * this.options.size}px;
-      top: ${s[0] * this.options.size}px;
-      width: ${(e[1] - s[1] + 1) * this.options.size}px;
-      height: ${(e[0] - s[0] + 1) * this.options.size}px;
-      transition: top .3s, left .3s;
-      border: ${this.options.margin}px solid #fff;
-      box-sizing: border-box;
-      user-select: none;
-      text-align: center;
-    `;
-
-    addSlideListener(div, ([row, col]) => {
-      if (this.move(role.role, [row, col])) {
-        console.log('>>>', '逃脱成功');
-        alert('逃脱成功');
-        window.location.reload();
-      }
-      this.update(role.role);
+    this.puzzle = new Puzzle({
+      board: STAGES[0].board,
+      row: 5,
+      col: 4,
+      size: options.size,
     });
-    div.innerHTML = role.name;
-    return div;
   }
 
   render() {
-    const div = document.createElement('div');
-    div.style.cssText = `
-      position: relative;
-      width: ${this.options.size * 4}px;
-      height: ${this.options.size * 5}px;
-    `;
-
-    for (let i = 1; i < ROLES.length; i++) {
-      const roleEle = this.createRole(ROLES[i]);
-      div.appendChild(roleEle);
-    }
+    const dom = this.puzzle.render((role) => {
+      const div = document.createElement('div');
+      div.innerHTML = ROLES[role].name;
+      div.style.border = `${this.options.margin}px solid #fff`;
+      div.style.boxSizing = 'border-box';
+      div.style.height = '100%';
+      div.style.background = ROLES[role].background;
+      return div;
+    });
 
     this.container.innerHTML = '';
-    this.container.appendChild(div);
-  }
-
-  update(role) {
-    const points = this.getRolePoints(role);
-    const s = points[0];
-    const roleEle = document.querySelector(`[data-role="${role}"]`);
-    roleEle.style.left = `${s[1] * this.options.size}px`;
-    roleEle.style.top = `${s[0] * this.options.size}px`;
+    this.container.appendChild(dom);
   }
 }
