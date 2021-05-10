@@ -56,17 +56,23 @@ class Puzzle {
     const div = document.createElement('div');
     const s = points[0];
     const e = points[points.length - 1];
+    const rect = {
+      left: s[1] * this.size,
+      top: s[0] * this.size,
+      width: (e[1] - s[1] + 1) * this.size,
+      height: (e[0] - s[0] + 1) * this.size,
+    };
     div.setAttribute('data-role', role);
     div.style.cssText = `
       position: absolute;
-      left: ${s[1] * this.size}px;
-      top: ${s[0] * this.size}px;
-      width: ${(e[1] - s[1] + 1) * this.size}px;
-      height: ${(e[0] - s[0] + 1) * this.size}px;
+      left: ${rect.left}px;
+      top: ${rect.top}px;
+      width: ${rect.width}px;
+      height: ${rect.height}px;
       transition: top .3s, left .3s;
       user-select: none;
     `;
-    div.appendChild(roleRender(role));
+    div.appendChild(roleRender(role, rect));
 
     addSlideListener(div, ([row, col]) => {
       this.move(role, [row, col]);

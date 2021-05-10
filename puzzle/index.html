@@ -6,6 +6,7 @@
   <title>Document</title>
 </head>
 <body>
+  <input id="file" type="file" onchange="handleFileChange(event)" />
   <div id="container">
 
   </div>
@@ -13,8 +14,14 @@
   <script src="../utils/puzzle.js"></script>
   <script src="puzzle.js"></script>
   <script>
-    const h = new PuzzleGame('#container');
-    h.render();
+    function handleFileChange(e) {
+      const file = e.target.files[0];
+      console.log('===', file)
+      const h = new PuzzleGame('#container', {
+        image: URL.createObjectURL(file)
+      });
+      h.render();
+    }
   </script>
 </body>
 </html>
