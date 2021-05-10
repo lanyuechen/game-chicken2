@@ -12,17 +12,24 @@ const ROLES = [
   {name: '曹操', role: 10, background: 'lightyellow'},
 ];
 
-class HuaRongDao {
-  constructor(selector, options = { size: 100, margin: 2 }) {
-    this.options = options;
-    this.container = document.querySelector(selector);
-    this.board = [
+const STAGES = [
+  {
+    name: '横道立马',
+    board: [
       [8, 10, 10, 9],
       [8, 10, 10, 9],
       [6, 5,  5,  7],
       [6, 2,  3,  7],
       [1, 0,  0,  4],
-    ];
+    ],
+  },
+]
+
+class HuaRongDao {
+  constructor(selector, options = { size: 100, margin: 2 }) {
+    this.options = options;
+    this.container = document.querySelector(selector);
+    this.board = STAGES[0].board;
   }
 
   move(role, [row, col]) {
@@ -51,34 +58,6 @@ class HuaRongDao {
     return sourcePoints;
   }
 
-  handleTouchStart(e, role, type) {
-    if (e.targetTouches) {  // 兼容touch/mouse事件
-      e.preventDefault();
-      e = e.targetTouches[0];
-    }
-    const x = e.clientX;
-    const y = e.clientY;
-    const handleTouchMove = (e) => {
-      if (e.targetTouches) {
-        e.preventDefault();
-        e = e.targetTouches[0];
-      }
-      const row = Math.sign(parseInt((e.clientY - y) / 5));
-      const col = row ? 0 : Math.sign(parseInt((e.clientX - x) / 5));
-      if (!row && !col) {
-        return;
-      }
-      if (this.move(role, [row, col])) {
-        console.log('>>>', '逃脱成功');
-        alert('逃脱成功');
-        window.location.reload();
-      }
-      this.update(role);
-      e.target.removeEventListener(`${type}move`, handleTouchMove);
-    };
-    e.target.addEventListener(`${type}move`, handleTouchMove);
-  }
-
   createRole(role) {
     const points = this.getRolePoints(role.role);
     const div = document.createElement('div');
@@ -98,8 +77,15 @@ class HuaRongDao {
       user-select: none;
       text-align: center;
     `;
-    div.addEventListener('touchstart', (e) => this.handleTouchStart(e, role.role, 'touch'));
-    div.addEventListener('mousedown', (e) => this.handleTouchStart(e, role.role, 'mouse'));
+
+    addSlideListener(div, ([row, col]) => {
+      if (this.move(role.role, [row, col])) {
+        console.log('>>>', '逃脱成功');
+        alert('逃脱成功');
+        window.location.reload();
+      }
+      this.update(role.role);
+    });
     div.innerHTML = role.name;
     return div;
   }
