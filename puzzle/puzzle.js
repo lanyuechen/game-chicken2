@@ -23,7 +23,6 @@ class PuzzleGame {
     const { row, col, size } = this.options;
     const dom = this.puzzle.render((role, rect) => {
       const div = document.createElement('div');
-      div.innerHTML = role;
       div.style.cssText = `
         border: ${this.options.margin}px solid #fff;
         box-sizing: border-box;
@@ -31,7 +30,7 @@ class PuzzleGame {
         background: url(${image});
         background-size: ${col * size}px ${row * size}px;
         background-position: ${-rect.left}px ${-rect.top}px;
-      `
+      `;
       return div;
     });
 
