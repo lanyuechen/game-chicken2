@@ -2,6 +2,9 @@ class PuzzleGame {
   constructor(selector, options = {}) {
     this.options = options;
     this.container = document.querySelector(selector);
+    const sizeH = Math.floor((window.innerWidth - 20) / 4);
+    const sizeV = Math.floor((window.innerHeight - 20) / 5);
+    const size = Math.min(sizeH, sizeV);
     const board = [];
     for (let i = 0; i < this.options.row; i++) {
       board[i] = [];
@@ -15,7 +18,7 @@ class PuzzleGame {
       board,
       row: this.options.row,
       col: this.options.col,
-      size: this.options.size,
+      size,
     });
   }
 

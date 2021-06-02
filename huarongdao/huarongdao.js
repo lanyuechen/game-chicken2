@@ -14,7 +14,7 @@ const ROLES = [
 
 const STAGES = [
   {
-    name: '横道立马',
+    name: '横刀立马',
     board: [
       [8, 10, 10, 9],
       [8, 10, 10, 9],
@@ -29,11 +29,15 @@ class HuaRongDao {
   constructor(selector, options = { size: 100, margin: 2 }) {
     this.options = options;
     this.container = document.querySelector(selector);
+    const sizeH = Math.floor((window.innerWidth - 20) / 4);
+    const sizeV = Math.floor((window.innerHeight - 20) / 5);
+    const size = Math.min(sizeH, sizeV);
+
     this.puzzle = new Puzzle({
       board: STAGES[0].board,
       row: 5,
       col: 4,
-      size: options.size,
+      size,
     });
   }
 
@@ -49,6 +53,7 @@ class HuaRongDao {
     });
 
     this.container.innerHTML = '';
+    dom.style.margin = 'auto';
     this.container.appendChild(dom);
   }
 }
